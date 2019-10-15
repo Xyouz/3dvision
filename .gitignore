@@ -39,3 +39,6 @@ devel_environment.tcsh
 usr_environment.tcsh
 Makefile
 
+# HW archives
+*.tar.gz
+
