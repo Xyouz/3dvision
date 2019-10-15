@@ -30,3 +30,12 @@
 *.exe
 *.out
 *.app
+
+# Compilation files
+CMakeCache.txt
+CMakeFiles
+cmake_install.cmake
+devel_environment.tcsh
+usr_environment.tcsh
+Makefile
+
