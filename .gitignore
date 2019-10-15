@@ -42,3 +42,7 @@ Makefile
 # HW archives
 *.tar.gz
 
+# Binaries
+Panorama
+Fundamental
+
