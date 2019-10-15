@@ -144,7 +144,8 @@ FMatrix<float,3,3> computeF(vector<Match>& matches) {
     //FMatrix<float,3,3> F;
     vector<int> Inliers;
     
-    int n = matches.size(); int m = 0;
+    int n = matches.size();
+    int m = 0; // Estimated number of inliers
     int c = 0;
     cout << "Computing F...\n";
     while (c < Niter){
@@ -167,7 +168,8 @@ FMatrix<float,3,3> computeF(vector<Match>& matches) {
     matches.clear();
     for(size_t i=0; i<bestInliers.size(); i++)
         matches.push_back(all[bestInliers[i]]);
-
+    // F not refined using the inliers as I wasn't able to compute the svd
+    // of a FMatrix without fixing it's size during the compilation
     cout << "Done computing F\n"; 
     return bestF;
 }
