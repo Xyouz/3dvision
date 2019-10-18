@@ -117,7 +117,13 @@ static float correl(const Image<byte>& im1, int i1,int j1,float m1,
 static float sum(const Image<byte>& im, int i, int j)
 {
     float s=0.0f;
-    // ------------- TODO -------------
+    
+    for (int px = -win; px <= win; px++){
+        for (int py = -win; py <= win; py++){
+            s += (float)(im(i + px, j+py));
+        }
+    }
+    
     return s;
 }
 
