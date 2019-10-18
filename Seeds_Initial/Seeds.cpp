@@ -2,6 +2,8 @@
 // Project:  Seeds
 // Author:   Pascal Monasse
 
+// Marius Dufraisse
+
 #include <Imagine/Graphics.h>
 #include <Imagine/Images.h>
 #include <queue>
@@ -93,8 +95,21 @@ static void show3D(const Image<Color> im, const Image<int> disp) {
 static float correl(const Image<byte>& im1, int i1,int j1,float m1,
                     const Image<byte>& im2, int i2,int j2,float m2)
 {
-    float dist=0.0f;
-    // ------------- TODO -------------
+    float num=0.0f;
+    float denum1=0.0f;
+    float denum2=0.0f;
+
+    for (int px = -win; px <= win; px++){
+        for (int py = -win; py <= win; py++){
+            num += (im1(i1 + px, j1+py) - m1)*(im1(i2 + px, j2+py) - m2);
+            denum1 += pow((im1(i1 + px, j1+py) - m1),2.0);
+            denum2 += pow((im2(i2 + px, j2+py) - m2),2.0);
+        }
+    }
+    denum1 = pow(denum1, 0.5);
+    denum2 = pow(denum2, 0.5);
+    
+    float dist = num/(denum1*denum2+EPS); 
     return dist;
 }
 
