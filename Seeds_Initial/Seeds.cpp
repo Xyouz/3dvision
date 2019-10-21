@@ -99,17 +99,16 @@ static float correl(const Image<byte>& im1, int i1,int j1,float m1,
     float denum1=0.0f;
     float denum2=0.0f;
 
-    for (int px = -win; px <= win; px++){
-        for (int py = -win; py <= win; py++){
-            num += (im1(i1 + px, j1+py) - m1)*(im1(i2 + px, j2+py) - m2);
-            denum1 += pow((im1(i1 + px, j1+py) - m1),2.0);
-            denum2 += pow((im2(i2 + px, j2+py) - m2),2.0);
+    for (int px=-win; px <= win; px++){
+        for (int py=-win; py <= win; py++){
+            denum1 += pow(im1(i1+px,j1+py)-m1,2);
+            denum2 += pow(im2(i2+px,j2+py)-m2,2);
+          
+            num += (im1(i1+px,j1+py)-m1)*(im2(i2+px,j2+py)-m2);
         }
     }
-    denum1 = pow(denum1, 0.5);
-    denum2 = pow(denum2, 0.5);
     
-    float dist = num/(denum1*denum2+EPS); 
+    float dist = num/sqrt(denum1*denum2); // Rajouter un epsilon
     return dist;
 }
 
@@ -120,10 +119,9 @@ static float sum(const Image<byte>& im, int i, int j)
     
     for (int px = -win; px <= win; px++){
         for (int py = -win; py <= win; py++){
-            s += (float)(im(i + px, j+py));
+            s += im(i + px, j+py);
         }
     }
-    
     return s;
 }
 
@@ -131,17 +129,10 @@ static float sum(const Image<byte>& im, int i, int j)
 static float ccorrel(const Image<byte>& im1,int i1,int j1,
                      const Image<byte>& im2,int i2,int j2)
 {
-    if (i1 <= win || i1 + win >= im1.width() || j1 <= win || j1+win >= im1.height()){
-        if (i2 <= win || i2 + win >= im2.width() || j2 <= win || j2+win >= im2.height()){
-            return 0.0;
-        }
-    }
-    else {
-        float m1 = sum(im1,i1,j1);
-        float m2 = sum(im2,i2,j2);
-        int w = 2*win+1;
-        return correl(im1,i1,j1,m1/(w*w), im2,i2,j2,m2/(w*w));
-    }
+    float m1 = sum(im1,i1,j1);
+    float m2 = sum(im2,i2,j2);
+    int w = 2*win+1;
+    return correl(im1,i1,j1,m1/(w*w), im2,i2,j2,m2/(w*w));
 }
 
 /// Compute disparity map from im1 to im2, but only at points where NCC is
@@ -155,8 +146,6 @@ static void find_seeds(Image<byte> im1, Image<byte> im2,
     while(! Q.empty())
         Q.pop();
 
-    cout << sizeof (*im1.data()) << " " << Color(im1(0,0)) <<"\n";
-
     const int maxy = std::min(im1.height(),im2.height());
     const int refreshStep = (maxy-2*win)*5/100;
     for(int y=win; y+win<maxy; y++) {
@@ -165,7 +154,9 @@ static void find_seeds(Image<byte> im1, Image<byte> im2,
         for(int x=win; x+win<im1.width(); x++) {
             int bestDx;
             float bestNCC=-1.0f; float ncc;
+
             for (int Dx = dMin; Dx <= dMax; Dx++){ 
+                    if ((x + Dx) < win){continue;} // Don't consider patches that go out of the image
                     ncc = ccorrel(im1, x, y, im2,x+Dx,y);
                     if (ncc > bestNCC){
                         bestNCC = ncc;
@@ -182,6 +173,8 @@ static void find_seeds(Image<byte> im1, Image<byte> im2,
     }
     std::cout << std::endl;
 }
+
+
 
 /// Propagate seeds
 static void propagate(Image<byte> im1, Image<byte> im2,
