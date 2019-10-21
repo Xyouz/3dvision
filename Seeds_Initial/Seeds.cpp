@@ -164,7 +164,7 @@ static void find_seeds(Image<byte> im1, Image<byte> im2,
             std::cout << "Seeds: " << 5*(y-win)/refreshStep <<"%\r"<<std::flush;
         for(int x=win; x+win<im1.width(); x++) {
             int bestDx;
-            float bestNCC=0.0f; float ncc;
+            float bestNCC=-1.0f; float ncc;
             for (int Dx = dMin; Dx <= dMax; Dx++){ 
                     ncc = ccorrel(im1, x, y, im2,x+Dx,y);
                     if (ncc > bestNCC){
@@ -176,6 +176,7 @@ static void find_seeds(Image<byte> im1, Image<byte> im2,
               //  cout << bestNCC << "\n";
                 Q.push(Seed(x, y, bestDx, bestNCC));
                 disp(x,y) = bestDx;
+                seeds(x,y) = true;
             }
         }
     }
