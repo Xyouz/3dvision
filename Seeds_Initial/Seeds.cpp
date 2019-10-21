@@ -122,6 +122,7 @@ static float sum(const Image<byte>& im, int i, int j)
             s += im(i + px, j+py);
         }
     }
+
     return s;
 }
 
@@ -156,16 +157,15 @@ static void find_seeds(Image<byte> im1, Image<byte> im2,
             float bestNCC=-1.0f; float ncc;
 
             for (int Dx = dMin; Dx <= dMax; Dx++){ 
-                    // Use the if from propagate
                     if ((x + Dx) < win){continue;} // Don't consider patches that go out of the image 
+                                                   // Only work for Dx <= 0
                     ncc = ccorrel(im1, x, y, im2,x+Dx,y);
-                    if (ncc > bestNCC){
+                    if (ncc > bestNCC){ // Keep only the highest NCC value
                         bestNCC = ncc;
                         bestDx = Dx;
                     }
             }
             if (bestNCC >= nccSeed){
-              //  cout << bestNCC << "\n";
                 Q.push(Seed(x, y, bestDx, bestNCC));
                 disp(x,y) = bestDx;
                 seeds(x,y) = true;
@@ -191,7 +191,7 @@ static void propagate(Image<byte> im1, Image<byte> im2,
                  ! seeds(x,y)) {
                 int bestDx; float bestNCC = -1.0f; float ncc;
                 for (int Dx= s.d + -1; Dx<= s.d + 1; Dx++){
-                    if ((x + Dx) < win){continue;} // Don't consider patches that go out of the image
+                    if ((x + Dx) < win){continue;}
                     ncc = ccorrel(im1, x, y, im2,x+Dx,y);
                     if (ncc > bestNCC){
                         bestNCC = ncc;
@@ -199,8 +199,8 @@ static void propagate(Image<byte> im1, Image<byte> im2,
                     }
                 }
                 if (bestNCC >= 0){
-                    if(bestDx<dMin){bestDx = dMin;}
-                    if(bestDx>dMax){bestDx = dMax;}
+                    // Only keeps disparity in the desired range
+                    bestDx = (bestDx < dMin) ? dMin : (dMax < bestDx) ? dMax : bestDx;
                     disp(x,y) = bestDx;
                     seeds(x,y) = true;
                     Q.push(Seed(x,y,bestDx,bestNCC));
