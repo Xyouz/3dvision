@@ -222,8 +222,8 @@ int main()
     displayDisp(disp,W,2);
 
     // Only seeds
-    //find_seeds(I1, I2, nccSeed, disp, seeds, Q);
-    //displayDisp(disp,W,3);
+    find_seeds(I1, I2, nccSeed, disp, seeds, Q);
+    displayDisp(disp,W,3);
 
     // Propagation of seeds
     propagate(I1, I2, disp, seeds, Q);
