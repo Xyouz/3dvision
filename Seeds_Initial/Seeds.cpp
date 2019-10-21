@@ -131,10 +131,17 @@ static float sum(const Image<byte>& im, int i, int j)
 static float ccorrel(const Image<byte>& im1,int i1,int j1,
                      const Image<byte>& im2,int i2,int j2)
 {
-    float m1 = sum(im1,i1,j1);
-    float m2 = sum(im2,i2,j2);
-    int w = 2*win+1;
-    return correl(im1,i1,j1,m1/(w*w), im2,i2,j2,m2/(w*w));
+    if (i1 <= win || i1 + win >= im1.width() || j1 <= win || j1+win >= im1.height()){
+        if (i2 <= win || i2 + win >= im2.width() || j2 <= win || j2+win >= im2.height()){
+            return 0.0;
+        }
+    }
+    else {
+        float m1 = sum(im1,i1,j1);
+        float m2 = sum(im2,i2,j2);
+        int w = 2*win+1;
+        return correl(im1,i1,j1,m1/(w*w), im2,i2,j2,m2/(w*w));
+    }
 }
 
 /// Compute disparity map from im1 to im2, but only at points where NCC is
@@ -148,14 +155,28 @@ static void find_seeds(Image<byte> im1, Image<byte> im2,
     while(! Q.empty())
         Q.pop();
 
+    cout << sizeof (*im1.data()) << " " << Color(im1(0,0)) <<"\n";
+
     const int maxy = std::min(im1.height(),im2.height());
     const int refreshStep = (maxy-2*win)*5/100;
     for(int y=win; y+win<maxy; y++) {
         if((y-win-1)/refreshStep != (y-win)/refreshStep)
             std::cout << "Seeds: " << 5*(y-win)/refreshStep <<"%\r"<<std::flush;
         for(int x=win; x+win<im1.width(); x++) {
-            // ------------- TODO -------------
-            // Hint: just ignore windows that are not fully in image
+            int bestDx;
+            float bestNCC=0.0f; float ncc;
+            for (int Dx = dMin; Dx <= dMax; Dx++){ 
+                    ncc = ccorrel(im1, x, y, im2,x+Dx,y);
+                    if (ncc > bestNCC){
+                        bestNCC = ncc;
+                        bestDx = Dx;
+                    }
+            }
+            if (bestNCC >= nccSeed){
+              //  cout << bestNCC << "\n";
+                Q.push(Seed(x, y, bestDx, bestNCC));
+                disp(x,y) = bestDx;
+            }
         }
     }
     std::cout << std::endl;
@@ -196,6 +217,8 @@ int main()
     setActiveWindow(W,1);
     display(I2,0,0);
 
+    cout << sizeof *(I1.data()) << " " << I1[0,0] <<"\n";
+
     Image<int> disp(I1.width(), I1.height());
     Image<bool> seeds(I1.width(), I1.height());
     std::priority_queue<Seed> Q;
@@ -205,8 +228,8 @@ int main()
     displayDisp(disp,W,2);
 
     // Only seeds
-    find_seeds(I1, I2, nccSeed, disp, seeds, Q);
-    displayDisp(disp,W,3);
+    //find_seeds(I1, I2, nccSeed, disp, seeds, Q);
+    //displayDisp(disp,W,3);
 
     // Propagation of seeds
     propagate(I1, I2, disp, seeds, Q);
