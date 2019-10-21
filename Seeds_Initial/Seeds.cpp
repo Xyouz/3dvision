@@ -101,14 +101,14 @@ static float correl(const Image<byte>& im1, int i1,int j1,float m1,
 
     for (int px=-win; px <= win; px++){
         for (int py=-win; py <= win; py++){
-            denum1 += pow(im1(i1+px,j1+py)-m1,2);
-            denum2 += pow(im2(i2+px,j2+py)-m2,2);
+            denum1 += pow(im1(i1+px, j1+py) - m1, 2);
+            denum2 += pow(im2(i2+px, j2+py) - m2, 2);
           
-            num += (im1(i1+px,j1+py)-m1)*(im2(i2+px,j2+py)-m2);
+            num += (im1(i1+px, j1+py) - m1) * (im2(i2+px, j2+py) - m2);
         }
     }
     
-    float dist = num/sqrt(denum1*denum2); // Rajouter un epsilon
+    float dist = num/(sqrt(denum1*denum2)+1e-6);
     return dist;
 }
 
@@ -156,7 +156,8 @@ static void find_seeds(Image<byte> im1, Image<byte> im2,
             float bestNCC=-1.0f; float ncc;
 
             for (int Dx = dMin; Dx <= dMax; Dx++){ 
-                    if ((x + Dx) < win){continue;} // Don't consider patches that go out of the image
+                    // Use the if from propagate
+                    if ((x + Dx) < win){continue;} // Don't consider patches that go out of the image 
                     ncc = ccorrel(im1, x, y, im2,x+Dx,y);
                     if (ncc > bestNCC){
                         bestNCC = ncc;
@@ -184,11 +185,26 @@ static void propagate(Image<byte> im1, Image<byte> im2,
         Seed s=Q.top();
         Q.pop();
         for(int i=0; i<4; i++) {
-            float x=s.x+dx[i], y=s.y+dy[i];
+            int x=s.x+dx[i], y=s.y+dy[i];
             if(0<=x-win && 0<=y-win &&
-               x+win<im2.width() && y+win<im2.height() &&
-               ! seeds(x,y)) {
-                // ------------- TODO -------------
+                x+win<im2.width() && y+win<im2.height() &&
+                 ! seeds(x,y)) {
+                int bestDx; float bestNCC = -1.0f; float ncc;
+                for (int Dx= s.d + -1; Dx<= s.d + 1; Dx++){
+                    if ((x + Dx) < win){continue;} // Don't consider patches that go out of the image
+                    ncc = ccorrel(im1, x, y, im2,x+Dx,y);
+                    if (ncc > bestNCC){
+                        bestNCC = ncc;
+                        bestDx = Dx;
+                    }
+                }
+                if (bestNCC >= 0){
+                    if(bestDx<dMin){bestDx = dMin;}
+                    if(bestDx>dMax){bestDx = dMax;}
+                    disp(x,y) = bestDx;
+                    seeds(x,y) = true;
+                    Q.push(Seed(x,y,bestDx,bestNCC));
+                }
             }
         }
     }
