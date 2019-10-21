@@ -211,8 +211,6 @@ int main()
     setActiveWindow(W,1);
     display(I2,0,0);
 
-    cout << sizeof *(I1.data()) << " " << I1[0,0] <<"\n";
-
     Image<int> disp(I1.width(), I1.height());
     Image<bool> seeds(I1.width(), I1.height());
     std::priority_queue<Seed> Q;
