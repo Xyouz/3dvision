@@ -11,6 +11,11 @@ using namespace Imagine;
 typedef Image<byte> byteImage;
 typedef Image<double> doubleImage;
 
+/// 4-neighbors
+static const int dx[]={+1,  0, -1,  0};
+static const int dy[]={ 0, -1,  0, +1};
+
+static const int nNeighbors = (sizeof(dx)/sizeof(*dx));
 
 /*
  * Return image of mean intensity value over (2n+1)x(2n+1) patch
@@ -163,6 +168,8 @@ int main()
     int nd = dmax-dmin;
     // "Infinite" value
     int INF=1000000;
+    // Value of the K penalizer
+    double K = 1 + (nd-1) * nNeighbors * lambda;
     // Create graph
     /////------------------------------------------------------------
     auto node = [nx, ny, nd](int x, int y, int d){
@@ -184,9 +191,21 @@ int main()
     int nPixel = nx * ny;
     int nNode = nPixel * nd;
     int nEdge = nPixel * (1+ nd) - nx -ny;
-    Graph<int,int,int> G(nNode,nEdge);
+    Graph<double,double,double> G(nNode,nEdge);
+    G.add_node(nNode);
     
-
+    for (int x = 0; x < nx; x++){
+        for (int y = 0; y < ny; y++){
+            for (int d = 0; d < nd; d++){ // Peut-être nd+1 mais il faudrait changer nnode
+                for(int i=0; i<4; i++) { // Bourrin (arrete bidir pourrait être créée en une fois)
+                    int xn=x+dx[i], yn=y+dy[i];
+                    int noden = node(xn, yn, d);
+                    if ((noden < 0) || (noden >= nNode)){continue;}
+                    G.add_edge(node(x,y,d),noden,lambda,0);
+                }
+            }
+        }
+    }
 
     /////
     /////  END CODE TO BE COMPLETED
