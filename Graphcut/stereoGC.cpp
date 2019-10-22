@@ -162,10 +162,11 @@ int main()
     int INF=1000000;
     // Create graph
     /////------------------------------------------------------------
-    /////  BEGIN CODE TO COMPLETE: define appropriate graph G
-    /////
-    /* WARNING: dummy code to replace */ Graph<int,int,int> G(0,0); // Null graph
-    /* WARNING: dummy code to replace */ cout<<endl<<"***\n*** Dummy computation: code has to be completed!\n***"<<endl;
+    int nPixel = nx * ny;
+    int nNode = nPixel * nd;
+    int nEdge = nPixel * (1+ nd) - nx -ny;
+    Graph<int,int,int> G(nNode,nEdge);
+    
     /////
     /////  END CODE TO BE COMPLETED
     /////------------------------------------------------------------
