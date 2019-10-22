@@ -93,6 +93,9 @@ double zncc(
     return correl(I1, I1M, I2, I2M, u1, v1, u2, v2, n) / sqrt(var1 * var2);
 }
 
+double rho(double c){
+    return (c < 0.0) ? 1 : sqrt(1-c);
+}
 
 /*
  * Load two rectified images.
