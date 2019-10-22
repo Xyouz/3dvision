@@ -194,24 +194,35 @@ int main()
     Graph<double,double,double> G(nNode,nEdge);
     G.add_node(nNode);
     
-    for (int x = 0; x < nx; x++){
-        for (int y = 0; y < ny; y++){
+    cout << "\n!!! FIND GOOD CONDITIONS FOR X IN WINDOW !!\n";
+    cout << "Add % meter, check cap computation\n";
+    for (int x = 5; x < nx - 10; x++){
+        for (int y = 5; y < ny - 5; y++){
             for (int d = 0; d < nd; d++){ // Peut-être nd+1 mais il faudrait changer nnode
-                for(int i=0; i<4; i++) { // Bourrin (arrete bidir pourrait être créée en une fois)
+                // Edges to neighbors
+                for(int i=0; i<nNeighbors; i++) { // Bourrin (arrete bidir pourrait être créée en une fois)
                     int xn=x+dx[i], yn=y+dy[i];
                     int noden = node(xn, yn, d);
                     if ((noden < 0) || (noden >= nNode)){continue;}
                     G.add_edge(node(x,y,d),noden,lambda,0);
                 }
+                // Edges between levels of disparity
+                double cap = K;
+                cap += wcc * rho(zncc(I1, I1M, I2, I2M, x, y, x + d + dmin, y, n));
+                if (d == 0){
+                    G.add_tweights(node(x,y,0), cap, 0);
+                }
+                else if (d == (nd - 1)){
+                    G.add_tweights(node(x,y,d), 0, cap);
+                }
+                else {
+                    G.add_edge(node(x,y,d-1), node(x,y,d), cap, 0);
+                }                
             }
         }
     }
-
-    /////
-    /////  END CODE TO BE COMPLETED
     /////------------------------------------------------------------
     // Done
-    cout << "Don't forget to plafonne the D, slide 96." << endl;
     cout << "done" << endl;
 
 
