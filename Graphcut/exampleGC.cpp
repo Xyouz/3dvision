@@ -34,13 +34,13 @@ void testGCuts()
 	g.add_tweights( 3,   /* capacities */  0, 5 );
 	
 	g.add_edge( 0, 3,    /* capacities */  1, 0 );
-	g.add_edge( 0, 2,    /* capacities */  4, 0 );
+	g.add_edge( 0, 2,    /* capacities */  1, 0 );
 	g.add_edge( 1, 3,    /* capacities */  1, 0 );
-	g.add_edge( 1, 2,    /* capacities */  2, 0 );
+	g.add_edge( 1, 2,    /* capacities */  1, 0 );
 
 	int flow = g.maxflow();
 	cout << "Flow = " << flow << endl;
-	for (int i=0;i<2;i++)
+	for (int i=0;i<4;i++)
 		if (g.what_segment(i) == Graph<int,int,int>::SOURCE)
 			cout << i << " is in the SOURCE set" << endl;
 		else
