@@ -162,6 +162,22 @@ int main()
     int INF=1000000;
     // Create graph
     /////------------------------------------------------------------
+    auto node = [nx, ny, nd](int x, int y, int d){
+        return d + nd * (x + nx * y);
+    };
+    
+    auto noded = [nd](int n){
+        return n % nd;
+    };
+
+    auto nodex = [nx, nd](int n){
+        return (n / nd) % nx;
+    };
+
+    auto nodey = [nx, ny, nd](int n){
+        return (n / (nd* nx));
+    };
+
     int nPixel = nx * ny;
     int nNode = nPixel * nd;
     int nEdge = nPixel * (1+ nd) - nx -ny;
