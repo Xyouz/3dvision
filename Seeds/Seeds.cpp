@@ -198,7 +198,7 @@ static void propagate(Image<byte> im1, Image<byte> im2,
                         bestDx = Dx;
                     }
                 }
-                if (bestNCC >= -1){
+                if (bestNCC >= -1){ 
                     // Only keeps disparity in the desired range
                     bestDx = (bestDx < dMin) ? dMin : (dMax < bestDx) ? dMax : bestDx;
                     disp(x,y) = bestDx;
