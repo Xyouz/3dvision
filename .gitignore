@@ -46,6 +46,8 @@ Makefile
 Panorama/Panorama
 Fundamental/Fundamental
 Seeds/Seeds
+Graphcut/stereoGC
+Graphcut/exampleGC
 
 # Others
 .vscode*
