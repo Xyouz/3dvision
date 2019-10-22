@@ -46,3 +46,6 @@ Makefile
 Panorama
 Fundamental
 Seeds
+
+# Others
+.vscode*
