@@ -167,10 +167,13 @@ int main()
     int nEdge = nPixel * (1+ nd) - nx -ny;
     Graph<int,int,int> G(nNode,nEdge);
     
+
+
     /////
     /////  END CODE TO BE COMPLETED
     /////------------------------------------------------------------
     // Done
+    cout << "Don't forget to plafonne the D, slide 96." << endl;
     cout << "done" << endl;
 
 
