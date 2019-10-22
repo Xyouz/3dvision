@@ -25,11 +25,19 @@ using namespace Imagine;
 
 void testGCuts()
 {
-	Graph<int,int,int> g(/*estimated # of nodes*/ 2, /*estimated # of edges*/ 1); 
-	g.add_node(2); 
-	g.add_tweights( 0,   /* capacities */  1, 5 );
-	g.add_tweights( 1,   /* capacities */  6, 1 );
-	g.add_edge( 0, 1,    /* capacities */  4, 3 );
+	Graph<int,int,int> g(/*estimated # of nodes*/ 4, /*estimated # of edges*/ 4); 
+	g.add_node(4); 
+	
+	g.add_tweights( 0,   /* capacities */  3, 0 );
+	g.add_tweights( 1,   /* capacities */  2, 0 );
+	g.add_tweights( 2,   /* capacities */  0, 6 );
+	g.add_tweights( 3,   /* capacities */  0, 5 );
+	
+	g.add_edge( 0, 3,    /* capacities */  1, 0 );
+	g.add_edge( 0, 2,    /* capacities */  4, 0 );
+	g.add_edge( 1, 3,    /* capacities */  1, 0 );
+	g.add_edge( 1, 2,    /* capacities */  2, 0 );
+
 	int flow = g.maxflow();
 	cout << "Flow = " << flow << endl;
 	for (int i=0;i<2;i++)
