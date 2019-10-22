@@ -169,7 +169,7 @@ int main()
     // "Infinite" value
     int INF=1000000;
     // Value of the K penalizer
-    double K = 1 + (nd-1) * nNeighbors * lambda;
+    int K = 1 + (nd-1) * nNeighbors * lambda;
     // Create graph
     /////------------------------------------------------------------
     auto node = [nx, ny, nd](int x, int y, int d){
@@ -191,10 +191,11 @@ int main()
     int nPixel = nx * ny;
     int nNode = nPixel * nd;
     int nEdge = nPixel * (1+ nd) - nx -ny;
-    Graph<double,double,double> G(nNode,nEdge);
+    Graph<int,int,int> G(nNode,nEdge);
     G.add_node(nNode);
     
     cout << "\n!!! FIND GOOD CONDITIONS FOR X IN WINDOW !!\n";
+    cout << "\n!!! G DOIT AVOIR DES TYPE INT !!\n";
     cout << "Add % meter, check cap computation\n";
     for (int x = 5; x < nx - 10; x++){
         for (int y = 5; y < ny - 5; y++){
@@ -207,7 +208,7 @@ int main()
                     G.add_edge(node(x,y,d),noden,lambda,0);
                 }
                 // Edges between levels of disparity
-                double cap = K;
+                int cap = K;
                 cap += wcc * rho(zncc(I1, I1M, I2, I2M, x, y, x + d + dmin, y, n));
                 if (d == 0){
                     G.add_tweights(node(x,y,0), cap, 0);
