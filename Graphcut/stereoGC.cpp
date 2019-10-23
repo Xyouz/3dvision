@@ -157,7 +157,6 @@ int main()
     // Done
     cout << "done" << endl;
 
-
     ///// Construct graph
     cout << "Constructing graph (be patient)... " << flush;
     // Precompute images of mean intensity value over patch
@@ -195,20 +194,23 @@ int main()
     G.add_node(nNode);
     
     cout << "\n!!! FIND GOOD CONDITIONS FOR X IN WINDOW !!\n";
+    cout << "zoom applied to d ?\n";
     cout << "Add % meter, check cap computation\n";
-    for (int x = 5; x < nx - 10; x++){
-        for (int y = 5; y < ny - 5; y++){
+    for (int x = 0; x < nx; x++){
+        for (int y = 0; y < ny; y++){
             for (int d = 0; d < nd; d++){ // Peut-être nd+1 mais il faudrait changer nnode
                 // Edges to neighbors
-                for(int i=0; i<nNeighbors; i++) { // Bourrin (arrete bidir pourrait être créée en une fois)
+                for(int i=0; i<nNeighbors; i++) {
                     int xn=x+dx[i], yn=y+dy[i];
                     int noden = node(xn, yn, d);
-                    if ((noden < 0) || (noden >= nNode)){continue;}
-                    G.add_edge(node(x,y,d),noden,lambda,0);
+                    if ((noden >= 0) && (noden < nNode)){
+                        G.add_edge(node(x,y,d),noden,lambda,0);
+                    }
                 }
                 // Edges between levels of disparity
                 int cap = K;
-                cap += wcc * rho(zncc(I1, I1M, I2, I2M, x, y, x + d + dmin, y, n));
+                double ZNcc = zncc(I1, I1M, I2, I2M, n+zoom*x, n+zoom*y, n+zoom*(x + d + dmin), n+zoom*y, n);
+                cap += wcc * rho(ZNcc);
                 if (d == 0){
                     G.add_tweights(node(x,y,0), cap, 0);
                 }
