@@ -168,7 +168,7 @@ int main()
     // "Infinite" value
     int INF=1000000;
     // Value of the K penalizer
-    int K = 1 + (nd-1) * nNeighbors * lambda;
+    int K = 1 + nd * nNeighbors * lambda;
     // Create graph
     /////------------------------------------------------------------
     auto node = [nx, ny, nd](int x, int y, int d){
@@ -188,17 +188,21 @@ int main()
     };
 
     int nPixel = nx * ny;
-    int nNode = nPixel * nd;
-    int nEdge = nPixel * (1+ nd) - nx -ny;
+    int nNode = nPixel * nd ;
+    int nEdge = (nNode * 5 - nPixel); // Find the exact number of edges
     Graph<int,int,int> G(nNode,nEdge);
     G.add_node(nNode);
-    
+
     cout << "\n!!! FIND GOOD CONDITIONS FOR X IN WINDOW !!\n";
     cout << "zoom applied to d ?\n";
-    cout << "Add % meter, check cap computation\n";
+    cout << "Check cap computation\n";
+    
+    const int refreshStep = nx*5/100;
     for (int x = 0; x < nx; x++){
+        if((x-n-1)/refreshStep != (x-n)/refreshStep)
+            std::cout << "Seeds: " << 5*(x-n)/refreshStep <<"%\r"<<std::flush;
         for (int y = 0; y < ny; y++){
-            for (int d = 0; d < nd; d++){ // Peut-être nd+1 mais il faudrait changer nnode
+            for (int d = 0; d < nd; d++){
                 // Edges to neighbors
                 for(int i=0; i<nNeighbors; i++) {
                     int xn=x+dx[i], yn=y+dy[i];
@@ -211,11 +215,11 @@ int main()
                 int cap = K;
                 double ZNcc = zncc(I1, I1M, I2, I2M, n+zoom*x, n+zoom*y, n+zoom*(x + d + dmin), n+zoom*y, n);
                 cap += wcc * rho(ZNcc);
+                if (d == (nd - 1)){
+                    G.add_tweights(node(x,y,d), 0, cap);
+                }
                 if (d == 0){
                     G.add_tweights(node(x,y,0), cap, 0);
-                }
-                else if (d == (nd - 1)){
-                    G.add_tweights(node(x,y,d), 0, cap);
                 }
                 else {
                     G.add_edge(node(x,y,d-1), node(x,y,d), cap, 0);
