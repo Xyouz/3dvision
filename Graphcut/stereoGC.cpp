@@ -194,7 +194,7 @@ int main()
     G.add_node(nNode);
 
     cout << "\n!!! FIND GOOD CONDITIONS FOR X IN WINDOW !!\n";
-    cout << "zoom applied to d ?\n";
+    cout << "??? zoom applied to d ???\n";
     cout << "Check cap computation\n";
     
     const int refreshStep = nx*5/100;
@@ -213,7 +213,7 @@ int main()
                 }
                 // Edges between levels of disparity
                 int cap = K;
-                double ZNcc = zncc(I1, I1M, I2, I2M, n+zoom*x, n+zoom*y, n+zoom*(x + d + dmin), n+zoom*y, n);
+                double ZNcc = zncc(I1, I1M, I2, I2M, n+zoom*x, n+zoom*y, n+zoom*x + d + dmin, n+zoom*y, n);
                 cap += wcc * rho(ZNcc);
                 if (d == (nd - 1)){
                     G.add_tweights(node(x,y,d), 0, cap);
