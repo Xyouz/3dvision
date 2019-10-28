@@ -158,7 +158,7 @@ int main()
     cout << "done" << endl;
 
     ///// Construct graph
-    cout << "Constructing graph (be patient)... " << flush;
+    cout << "Constructing the graph...\r" << flush;
     // Precompute images of mean intensity value over patch
     doubleImage I1M = meanImage(I1,n), I2M = meanImage(I2,n);
     // Zoomed image dimension, disregarding borders (strips of width equal to patch half-size)
@@ -189,26 +189,22 @@ int main()
 
     int nPixel = nx * ny;
     int nNode = nPixel * nd ;
-    int nEdge = (nNode * 5 - nPixel); 
+    int nEdge = nPixel * ( 3 * nd - 1 ) - nd * (nx+ny); 
     Graph<int,int,int> G(nNode,nEdge);
     G.add_node(nNode);
 
-    cout << "\n!!! FIND GOOD CONDITIONS FOR X IN WINDOW !!\n";
-    cout << "??? zoom applied to d ???\n";
-    cout << "Check cap computation\n";
-    
+    // Building the graph    
     const int refreshStep = nx*5/100;
     for (int x = 0; x < nx; x++){
         if((x-n-1)/refreshStep != (x-n)/refreshStep)
-            std::cout << "Graph: " << 5*(x-n)/refreshStep <<"%\r"<<std::flush;
+            std::cout << "Constructing the graph... " << 5*(x-n)/refreshStep <<"%\r"<<std::flush;
         for (int y = 0; y < ny; y++){
             for (int d = 0; d < nd; d++){
                 // Edges to neighbors
                 for(int i=0; i<nNeighbors; i++) {
                     int xn=x+dx[i], yn=y+dy[i];
-                    int noden = node(xn, yn, d);
-                    if ((noden >= 0) && (noden < nNode)){
-                        G.add_edge(node(x,y,d),noden,lambda,lambda);
+                    if ((xn < nx) && (yn < ny)){
+                        G.add_edge(node(x,y,d),node(xn, yn, d),lambda,lambda);
                     }
                 }
                 // Edges between levels of disparity
@@ -229,8 +225,7 @@ int main()
     }
     /////------------------------------------------------------------
     // Done
-    cout << endl << "done" << endl;
-
+    cout << "Constructing the graph... done" << endl;
 
     ///// Compute cut
     cout << "Computing minimum cut... " << flush;
