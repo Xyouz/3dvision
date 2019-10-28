@@ -158,7 +158,7 @@ int main()
     cout << "done" << endl;
 
     ///// Construct graph
-    cout << "Constructing the graph...\r" << flush;
+    cout << "Constructing the graph...          \r" << flush;
     // Precompute images of mean intensity value over patch
     doubleImage I1M = meanImage(I1,n), I2M = meanImage(I2,n);
     // Zoomed image dimension, disregarding borders (strips of width equal to patch half-size)
@@ -197,7 +197,7 @@ int main()
     const int refreshStep = nx*5/100;
     for (int x = 0; x < nx; x++){
         if((x-n-1)/refreshStep != (x-n)/refreshStep)
-            std::cout << "Constructing the graph... " << 5*(x-n)/refreshStep <<"%\r"<<std::flush;
+            std::cout << "Constructing the graph... " << 5*(x-n)/refreshStep <<"%          \r"<<std::flush;
         for (int y = 0; y < ny; y++){
             for (int d = 0; d < nd; d++){
                 // Edges to neighbors
