@@ -11,9 +11,9 @@ using namespace Imagine;
 typedef Image<byte> byteImage;
 typedef Image<double> doubleImage;
 
-/// 4-neighbors
-static const int dx[]={+1,  0, -1,  0};
-static const int dy[]={ 0, -1,  0, +1};
+/// neighbors
+static const int dx[]={+1,  0};
+static const int dy[]={ 0, +1};
 
 static const int nNeighbors = (sizeof(dx)/sizeof(*dx));
 
@@ -168,7 +168,7 @@ int main()
     // "Infinite" value
     int INF=1000000;
     // Value of the K penalizer
-    int K = 1 + nd * nNeighbors * lambda;
+    int K = 1 + nd * 4 * lambda;
     // Create graph
     /////------------------------------------------------------------
     auto node = [nx, ny, nd](int x, int y, int d){
@@ -189,7 +189,7 @@ int main()
 
     int nPixel = nx * ny;
     int nNode = nPixel * nd ;
-    int nEdge = (nNode * 5 - nPixel); // Find the exact number of edges
+    int nEdge = (nNode * 5 - nPixel); 
     Graph<int,int,int> G(nNode,nEdge);
     G.add_node(nNode);
 
@@ -200,7 +200,7 @@ int main()
     const int refreshStep = nx*5/100;
     for (int x = 0; x < nx; x++){
         if((x-n-1)/refreshStep != (x-n)/refreshStep)
-            std::cout << "Seeds: " << 5*(x-n)/refreshStep <<"%\r"<<std::flush;
+            std::cout << "Graph: " << 5*(x-n)/refreshStep <<"%\r"<<std::flush;
         for (int y = 0; y < ny; y++){
             for (int d = 0; d < nd; d++){
                 // Edges to neighbors
@@ -208,7 +208,7 @@ int main()
                     int xn=x+dx[i], yn=y+dy[i];
                     int noden = node(xn, yn, d);
                     if ((noden >= 0) && (noden < nNode)){
-                        G.add_edge(node(x,y,d),noden,lambda,0);
+                        G.add_edge(node(x,y,d),noden,lambda,lambda);
                     }
                 }
                 // Edges between levels of disparity
@@ -229,7 +229,7 @@ int main()
     }
     /////------------------------------------------------------------
     // Done
-    cout << "done" << endl;
+    cout << endl << "done" << endl;
 
 
     ///// Compute cut
