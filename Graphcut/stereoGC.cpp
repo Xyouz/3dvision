@@ -143,7 +143,7 @@ int main()
     float db = 100;    // Disparity base
     // Done
     cout << "done" << endl;
-
+    cout << "Parameters :\n  n: " << n << "\n  lambda: " << lambda << endl; 
 
     ////// Display images
     cout << "Displaying images... " << flush;
@@ -243,13 +243,11 @@ int main()
     for (int i=0;i<nx;i++) {
 	for (int j=0;j<ny;j++) {
 	    ///// Extract disparity from minimum cut
-	    /////------------------------------------------------------------
 	    int disp = 0;
         while ((disp < nd) && (G.what_segment(node(i,j,disp))==source)){
             disp++;
         }
         D(i,j) = dmin + disp;
-	    /////------------------------------------------------------------
 	}
     }
     // Done
