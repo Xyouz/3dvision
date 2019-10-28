@@ -51,3 +51,9 @@ Graphcut/exampleGC
 
 # Others
 .vscode*
+
+# Latex compilation files
+*.aux
+*.log
+*.pdf
+*.synctex.gz
