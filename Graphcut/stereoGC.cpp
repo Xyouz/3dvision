@@ -172,21 +172,10 @@ int main()
     // Value of the K penalizer
     int K = 1 + nd * 4 * lambda;
     // Create graph
-    /////------------------------------------------------------------
+    
+    // Function to translate coordinate into node number
     auto node = [nx, ny, nd](int x, int y, int d){
         return d + nd * (x + nx * y);
-    };
-    
-    auto noded = [nd](int n){
-        return n % nd;
-    };
-
-    auto nodex = [nx, nd](int n){
-        return (n / nd) % nx;
-    };
-
-    auto nodey = [nx, ny, nd](int n){
-        return (n / (nd* nx));
     };
 
     int nPixel = nx * ny;
@@ -225,7 +214,6 @@ int main()
             }
         }
     }
-    /////------------------------------------------------------------
     // Done
     cout << "Constructing the graph... done" << endl;
 
