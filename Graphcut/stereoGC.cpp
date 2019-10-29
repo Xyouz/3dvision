@@ -1,3 +1,5 @@
+// Marius Dufraisse MVA
+
 #include <Imagine/Images.h>
 #include <iostream>
 #include <fstream>
