@@ -51,6 +51,7 @@ Graphcut/exampleGC
 
 # Others
 .vscode*
+.DS_Store
 
 # Latex compilation files
 *.aux
