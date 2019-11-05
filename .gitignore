@@ -58,3 +58,7 @@ Graphcut/exampleGC
 *.log
 *.pdf
 *.synctex.gz
+
+# Jupyter
+*.ipynb_checkpoints
+
