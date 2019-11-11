@@ -49,6 +49,10 @@ Seeds/Seeds
 Graphcut/stereoGC
 Graphcut/exampleGC
 
+# Harris tex and py
+Harris/tex_source
+Harris/dufraisse.py
+
 # Others
 .vscode*
 .DS_Store
